@@ -14,10 +14,20 @@ function updateTotalField(totalFieldId, amount) {
   totalElement.innerText = previousText + amount;
 }
 
-function updateBalance(amount, isAdd) {
+function getCurrentBalance() {
   const balanceUpdate = document.getElementById("balance-update");
   const balanceText = balanceUpdate.innerText;
   const balanceUpdateTotal = parseFloat(balanceText);
+  return balanceUpdateTotal;
+}
+
+function updateBalance(amount, isAdd) {
+  const balanceUpdate = document.getElementById("balance-update");
+  /* 
+  const balanceText = balanceUpdate.innerText;
+  const balanceUpdateTotal = parseFloat(balanceText); */
+
+  const balanceUpdateTotal = getCurrentBalance();
   if (isAdd == true) {
     balanceUpdate.innerText = balanceUpdateTotal + amount;
   } else {
@@ -26,12 +36,12 @@ function updateBalance(amount, isAdd) {
 }
 
 //......................................old code......................................
-document.getElementById("deposit-button").addEventListener("click", function () {
+document
+  .getElementById("deposit-button")
+  .addEventListener("click", function () {
     /* const depositInput = document.getElementById("deposit-input");
     const depositText = depositInput.value;
     const depositAmount = parseFloat(depositText); */
-
-    const depositAmount = getInputValue("deposit-input");
 
     //get current deposit
     /* const depositTotal = document.getElementById("deposit-total");
@@ -39,16 +49,19 @@ document.getElementById("deposit-button").addEventListener("click", function () 
     const depositTotalAmount = parseFloat(depositTotalText);
     depositTotal.innerText = depositTotalAmount + depositAmount; */
 
-    updateTotalField("deposit-total", depositAmount);
-
     //update balance
 
     /* const balanceUpdate = document.getElementById("balance-update");
     const balanceText = balanceUpdate.innerText;
     const balanceUpdateTotal = parseFloat(balanceText);
     balanceUpdate.innerText = balanceUpdateTotal + depositAmount; */
-
-    updateBalance(depositAmount, true);
+    const depositAmount = getInputValue("deposit-input");
+    if (depositAmount > 0) {
+      updateTotalField("deposit-total", depositAmount);
+      updateBalance(depositAmount, true);
+    } else {
+      alert("আমার ব্যাংক এ নেগেটিভ টাকা জমা হয় না ");
+    }
   });
 
 // ...........................withdraw balance.....................................................
@@ -59,16 +72,12 @@ document
     const withdrawInputText = withdrawInput.value;
     const withdrawAmount = parseFloat(withdrawInputText); */
 
-    const withdrawAmount = getInputValue("withdraw-input");
-
     //withdraw total
 
     /* const withdrawTotal = document.getElementById("withdraw-total");
     const withdrawTotalText = withdrawTotal.innerText;
     const withdrawTotalAmount = parseFloat(withdrawTotalText);
     withdrawTotal.innerText = withdrawTotalAmount + withdrawAmount; */
-
-    updateTotalField("withdraw-total", withdrawAmount);
 
     //withdraw balance low
     //clear
@@ -77,5 +86,18 @@ document
     const previousBalance = parseFloat(balanceTotalText);
     balanceTotal.innerText = previousBalance - withdrawAmount; */
 
-    updateBalance(withdrawAmount, false);
+    const withdrawAmount = getInputValue("withdraw-input");
+    const currentBalance = getCurrentBalance();
+
+    if (withdrawAmount > 0 && withdrawAmount < currentBalance) {
+      updateTotalField("withdraw-total", withdrawAmount);
+      updateBalance(withdrawAmount, false);
+    }
+    if (withdrawAmount > currentBalance) {
+      alert("তোমার ব্যালেন্স এ টাকা নাই");
+    }
   });
+  // logout option
+document.getElementById("logout").addEventListener("click", function () {
+  window.location.href = "index.html";
+});
